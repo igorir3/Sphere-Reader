@@ -1,7 +1,7 @@
 if __name__ == '__main__':
     raise SystemError("ЗАПУЩЕН НЕ ИНИЦИАЛИЗИРУЮЩИЙ ФАЙЛ")
 
-from PySide6.QtWidgets import (QWidget, QLabel, QGridLayout, QFileDialog, QMessageBox, QComboBox, QCheckBox, QListWidget, QLineEdit, QPushButton, QSpinBox)
+from PySide6.QtWidgets import (QWidget, QLabel, QGridLayout, QFileDialog, QMessageBox, QComboBox, QCheckBox, QListWidget, QLineEdit, QPushButton, QSpinBox, QDoubleSpinBox)
 from PySide6.QtGui import (QIcon)
 import traceback
 import classes 
@@ -50,6 +50,16 @@ class ScriptWindow(QWidget):
                 self.paramsCustomItems[param].setSingleStep(1)
                 self.layout.addWidget(self.paramsCustomItems[param], y, 0, 1, 3)
                 y = y + 1
+            elif self.config["inputParams"][param] == float:
+                self.paramsCustomItems[param] = QDoubleSpinBox()
+                self.paramsCustomItems[param].setValue(1.0)
+                self.paramsCustomItems[param].setSingleStep(0.1)
+                self.layout.addWidget(self.paramsCustomItems[param], y, 0, 1, 3)
+                y = y + 1
+            elif self.config["inputParams"][param] == str:
+                self.paramsCustomItems[param] = QLineEdit()
+                self.layout.addWidget(self.paramsCustomItems[param], y, 0, 1, 3)
+                y = y + 1
                 
         self.chapters = QComboBox(self)
         self.chapterItems = {"roots" : []}
@@ -86,10 +96,16 @@ class ScriptWindow(QWidget):
     def proceed(self):
         params = {}
         for key in self.paramsCustomItems.keys():
-            params[key] = self.paramsCustomItems[key].value() 
+            if type(self.paramsCustomItems[key]) is QLineEdit:
+                params[key] = self.paramsCustomItems[key].text() 
+            else:
+                params[key] = self.paramsCustomItems[key].value() 
             
         try:
-            data = self.config["exec"](self.PROJECT.getByKey(self.selectsheets.selectedItems()[0].text()), params)
+            if self.config["multiply"]:
+                data = self.config["exec"]([self.PROJECT.getByKey(item.text()) for item in self.selectsheets.selectedItems()], params)
+            else:
+                data = self.config["exec"](self.PROJECT.getByKey(self.selectsheets.selectedItems()[0].text()), params)
             self.PROJECT.DATAS[self.chapters.currentText()][self.name.text()] = data
             self.PROJECT.edited = True
         except:
