@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 import os
+import argparse
 
 from PySide6.QtWidgets import (QApplication)
 import multiprocess as multiprocessing
@@ -28,7 +29,15 @@ if __name__ == '__main__':
     logging.basicConfig(handlers=[stream_handler, file_handler], level=logging.INFO)
     logging.info("Логгер запущен!")
     
+    parser = argparse.ArgumentParser()
+    parser.add_argument('prj_file', type=str, help='Файл проекта для открытия при запуске', default=None, nargs='?')
+    args = parser.parse_args()
+    
     PROJECT = classes.Project()
+    if args.prj_file:
+        if os.path.exists(args.prj_file):
+            PROJECT.LoadProject(args.prj_file)
+            
     logging.info(f"Проект инициализирован: {str(PROJECT.DATAS)=}")
     multiprocessing.freeze_support()
 
