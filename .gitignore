@@ -1,3 +1,5 @@
 python/*
 SphereReaderInstaller.exe
 logs/*
+__pycache__
+executer/target
