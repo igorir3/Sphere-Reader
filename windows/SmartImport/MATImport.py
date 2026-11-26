@@ -84,7 +84,7 @@ class MATImportWindow(QWidget):
         def walk(obj, path : str):
             if isinstance(obj, Mapping):
                 for key, value in obj.items():
-                    new_path = f"{path}\\{key}" if path else str(key)
+                    new_path = f"{key}\\{path}" if path else str(key)
                     walk(value, new_path)
                 return
             value = obj

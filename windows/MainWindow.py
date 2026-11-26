@@ -226,8 +226,6 @@ class MainWindow(QMainWindow):
             logging.info(f"|MainWindow|\tВопрос об сохранении: {result}")
             if result == QMessageBox.StandardButton.Yes:
                 self.SaveProject()
-            elif result == QMessageBox.StandardButton.Cancel:
-                return
         self.PROJECT.NewProject()
         
     def LoadProject(self, filename : None|str = None):
@@ -238,8 +236,6 @@ class MainWindow(QMainWindow):
             
             if result == QMessageBox.StandardButton.Yes:
                 self.SaveProject()
-            elif result == QMessageBox.StandardButton.Cancel:
-                return
 
         if not(filename):
             filename, _ = QFileDialog.getOpenFileName(self, "Загрузка проекта", ".", "Архив проекта (*.tar.zst)")
